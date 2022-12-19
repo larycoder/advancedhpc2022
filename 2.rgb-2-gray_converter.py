@@ -27,8 +27,8 @@ def cpu_rgb_2_gray(image_file):
     new_img = []
     for i in range(int(flatten.shape[0] / 3)):
         idx = i * 3
-        new_img.append(
-            (flatten[idx] + flatten[idx + 1] + flatten[idx + 2]) / 3)
+        value = (flatten[idx] + flatten[idx + 1] + flatten[idx + 2]) / 3
+        new_img.append(int(value))
     new_img = np.array(new_img)
     debug(0, f"new image shape: {new_img.shape}")
     debug(0, f"new image sample value: {new_img[1:10]}")
@@ -39,9 +39,13 @@ def cpu_rgb_2_gray(image_file):
     return gray_img
 
 
+def gpu_rgb_2_gray():
+    pass
+
+
 def save_img(saved_path, img):
     saved_path = f"result/{saved_path}"
-    plt.imsave(saved_path, img, format="jpg")
+    plt.imsave(saved_path, img)
     debug(1, f"saved gray image path: " + saved_path)
 
 
