@@ -12,10 +12,7 @@ def debug(id, obj):
     pass
 
 
-def cpu_rgb_2_gray(image_file):
-    full_img = plt.imread(image_file)
-
-    img = full_img[0:100]
+def cpu_rgb_2_gray(img):
     debug(0, f"image type: {type(img)}")
     debug(0, f"image sample value: \n{img[0][0:5]}")
 
@@ -39,7 +36,13 @@ def cpu_rgb_2_gray(image_file):
     return gray_img
 
 
-def gpu_rgb_2_gray():
+def gpu_rgb_2_gray(img):
+    """
+    2. Feed data to device
+    3. Build kernel
+    4. Execute kernel
+    5. Get result
+    """
     pass
 
 
@@ -51,10 +54,11 @@ def save_img(saved_path, img):
 
 if __name__ == "__main__":
     image_file = "resource/eiffel.jpg"
+    image = plt.imread(image_file)
 
     print("CPU Running...")
     start = time.time()
-    img = cpu_rgb_2_gray(image_file)
+    img = cpu_rgb_2_gray(image[0:100])
     end = time.time()
     print(f"Elapsed time: {(end - start) * 1000} ms")
 
