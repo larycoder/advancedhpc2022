@@ -21,12 +21,13 @@ cc_cores_per_SM_dict = {
 # device info
 print("=== DEVICE DETECT ===")
 print(cuda.detect())
-print("=========")
+print("=========\n")
 
 print("=== DEVICE INFO ===")
 for i in cuda.gpus:
     print(f"Device name: {i.name.decode('UTF-8')} ({i.id})")
     device = cuda.select_device(i.id)
+    mem_info = cuda.current_context(i.id).get_memory_info()
 
     # core info: multiprocessor count, core count
     multiprocessor_count = device.MULTIPROCESSOR_COUNT
@@ -38,5 +39,8 @@ for i in cuda.gpus:
     print("Core count: ", core_count)
 
     # memory info: memory size
-    print(device.get_memory_info())
-print("=========")
+    print(f"Memory total: {round(mem_info.total / (1024 * 1024 * 1024), 2)} Gb")
+    print(f"Memory free: {round(mem_info.free / (1024 * 1024 * 1024), 2)} Gb")
+
+    print()
+print("=========\n")
