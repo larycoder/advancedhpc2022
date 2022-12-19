@@ -1,0 +1,35 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+
+\title{RGB-2-Gray image converter: cpu and gpu comparison}
+\author{LE Nhu Chu Hiep}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This is part of advancedhpc2022 course. We try to implement algorithm to convert rgb image to gray-scale image. It is just simple algorithm. But we implement it in 2 methods: first to run on cpu and second to run on gpu. Then we try to measure and compare elapsed time between 2 methods.
+
+\section{CPU Implementation}
+
+Do it simple with a loop and recompute each pixel. Following
+below instruction:
+
+\begin{enumerate}
+\item Load image
+\item Flatten image
+\item Loop and build average value for each pixel
+\item Re-shape image to original shape
+\item Shape image to new file
+\end{enumerate}
+
+Evaluation:
+
+\beign{verbatim}
+# TODO: coming soon
+\end{verbatim}
+
+\end{document}
