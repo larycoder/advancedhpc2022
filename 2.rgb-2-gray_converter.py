@@ -30,15 +30,29 @@ def cpu_rgb_2_gray(image_file):
         new_img.append(
             (flatten[idx] + flatten[idx + 1] + flatten[idx + 2]) / 3)
     new_img = np.array(new_img)
-    debug(0, f"gray image shape: {new_img.shape}")
-    debug(0, f"gray image sample value: {new_img[1:10]}")
+    debug(0, f"new image shape: {new_img.shape}")
+    debug(0, f"new image sample value: {new_img[1:10]}")
+
+    gray_img = np.reshape(new_img, (img.shape[0], img.shape[1]))
+    debug(0, f"gray image shape: {img.shape}")
+
+    return gray_img
+
+
+def save_img(saved_path, img):
+    saved_path = f"result/{saved_path}"
+    plt.imsave(saved_path, img, format="jpg")
+    debug(1, f"saved gray image path: " + saved_path)
 
 
 if __name__ == "__main__":
-    image_file = "./resource/eiffel.jpg"
+    image_file = "resource/eiffel.jpg"
 
     print("CPU Running...")
     start = time.time()
-    cpu_rgb_2_gray(image_file)
+    img = cpu_rgb_2_gray(image_file)
     end = time.time()
     print(f"Elapsed time: {(end - start) * 1000} ms")
+
+    img_name = f"{image_file.split('/')[-1].split('.')[0]}_cpu_gray.jpg"
+    save_img(img_name, img)
