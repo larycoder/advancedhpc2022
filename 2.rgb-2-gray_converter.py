@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from numba import cuda
 import time
 import numpy as np
 
@@ -38,17 +39,23 @@ def cpu_rgb_2_gray(img):
 
 def gpu_rgb_2_gray(img):
     """
-    2. Feed data to device
-    3. Build kernel
-    4. Execute kernel
-    5. Get result
+    1. Feed data to device
+    2. Build kernel
+    3. Execute kernel
+    4. Get result
     """
-    pass
+    @cuda.jit
+    def convert(src, dst):
+        tidx = cuda.threadIdx.x
+        bidx = cuda.blockIdx.x
+        bdidx = cuda.blockDim.x
+        #gidx = tidx + bidx * bdidx
+        pass
 
 
 def save_img(saved_path, img):
     saved_path = f"result/{saved_path}"
-    plt.imsave(saved_path, img)
+    plt.imsave(saved_path, img, cmap="gray")
     debug(1, f"saved gray image path: " + saved_path)
 
 
