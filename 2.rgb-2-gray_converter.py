@@ -66,7 +66,7 @@ def gpu_rgb_2_gray(img):
     dev_output = cuda.device_array(
         (int(flatten.shape[0] / 3),), dtype=np.uint8)
 
-    pixel = int(flatten.shape[0])
+    pixel = int(flatten.shape[0] / 3)
     thread_per_block = 64
     block_per_grid = (pixel + thread_per_block - 1) // thread_per_block
 
