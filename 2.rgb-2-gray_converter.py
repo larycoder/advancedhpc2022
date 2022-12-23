@@ -3,9 +3,14 @@ from numba import cuda
 import time
 import numpy as np
 
+debug_activate = True
+
 
 def debug(id, obj):
     """ Control debug flow by id """
+
+    if not debug_activate:
+        return
     if id == 0:
         return
     if id == 2:
@@ -91,6 +96,11 @@ def save_img(saved_path, img):
 if __name__ == "__main__":
     image_file = "resource/eiffel.jpg"
     image = plt.imread(image_file)[0:500]
+
+    # initialize GPU
+    debug_activate = False
+    gpu_rgb_2_gray(image)
+    debug_activate = True
 
     print("GPU Running...")
     start = time.time()
