@@ -97,7 +97,8 @@ if __name__ == "__main__":
     timer = ElapsedTime()
 
     image_file = "resource/eiffel.jpg"
-    image = plt.imread(image_file)[0:500]
+    o_image = plt.imread(image_file)
+    image = crop_img(o_image, o_image.shape[1] / 2)
 
     # initialize GPU
     debug_activate = False
@@ -111,9 +112,9 @@ if __name__ == "__main__":
     timer.print_elapsed()
     save_img(f"{get_name(image_file)}_gpu_gray.jpg", img)
 
-    print("\nCPU Running...")
-    timer.start()
-    img = cpu_rgb_2_gray(image)
-    timer.end()
-    timer.print_elapsed()
-    save_img(f"{get_name(image_file)}_cpu_gray.jpg", img)
+#    print("\nCPU Running...")
+#    timer.start()
+#    img = cpu_rgb_2_gray(image)
+#    timer.end()
+#    timer.print_elapsed()
+#    save_img(f"{get_name(image_file)}_cpu_gray.jpg", img)

@@ -1,5 +1,6 @@
 # Several useful function
 import time
+import numpy as np
 
 
 class ElapsedTime():
@@ -20,3 +21,20 @@ class ElapsedTime():
 
 def get_name(path: str):
     return path.split('/')[-1].split('.')[0]
+
+
+def crop_img(img: np.ndarray, w=None, h=None, base=(0, 0)):
+    r_w = img.shape[1]
+    r_h = img.shape[0]
+
+    if base != (0, 0):
+        print("Could not rebase of crop for now...")
+        return img
+
+    if w is None or w > r_w:
+        w = r_w
+    if h is None or h > r_h:
+        h = r_h
+
+    b = base  # name is too long for fitting my screen
+    return img[b[0]: b[0] + int(h), b[1]: b[1] + int(w)]
