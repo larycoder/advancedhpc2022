@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from numba import cuda
-import time
 import numpy as np
+from utils import *
 
 debug_activate = True
 
@@ -94,6 +94,8 @@ def save_img(saved_path, img):
 
 
 if __name__ == "__main__":
+    timer = ElapsedTime()
+
     image_file = "resource/eiffel.jpg"
     image = plt.imread(image_file)[0:500]
 
@@ -103,17 +105,15 @@ if __name__ == "__main__":
     debug_activate = True
 
     print("GPU Running...")
-    start = time.time()
+    timer.start()
     img = gpu_rgb_2_gray(image)
-    end = time.time()
-    print(f"Elapsed time: {(end - start) * 1000} ms")
-    img_name = f"{image_file.split('/')[-1].split('.')[0]}_gpu_gray.jpg"
-    save_img(img_name, img)
+    timer.end()
+    timer.print_elapsed()
+    save_img(f"{get_name(image_file)}_gpu_gray.jpg", img)
 
-#    print("CPU Running...")
-#    start = time.time()
-#    img = cpu_rgb_2_gray(image)
-#    end = time.time()
-#    print(f"Elapsed time: {(end - start) * 1000} ms")
-#    img_name = f"{image_file.split('/')[-1].split('.')[0]}_cpu_gray.jpg"
-#    save_img(img_name, img)
+    print("\nCPU Running...")
+    timer.start()
+    img = cpu_rgb_2_gray(image)
+    timer.end()
+    timer.print_elapsed()
+    save_img(f"{get_name(image_file)}_cpu_gray.jpg", img)
