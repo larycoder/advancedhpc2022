@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
-from numba import cuda
+import threading
 import numpy as np
+from numba import cuda
 from utils import *
 
 debug_activate = True
@@ -10,8 +11,6 @@ def debug(id, obj):
     """ Control debug flow by id """
 
     if not debug_activate:
-        return
-    if id == 0:
         return
     if id == 2:
         return
@@ -29,11 +28,38 @@ def cpu_rgb_2_gray(img):
     debug(0, f"flatten image shape: {flatten.shape}")
     debug(0, f"flatten sample value: {flatten[0:10]}")
 
-    new_img = []
-    for i in range(int(flatten.shape[0] / 3)):
-        idx = i * 3
-        value = (flatten[idx] + flatten[idx + 1] + flatten[idx + 2]) / 3
-        new_img.append(int(value))
+    def process(src, dest, idx, len, max):
+        for i in range(idx, idx + len):
+            if (i >= max):  # prevent index out of range
+                break
+
+            pos = i * 3
+            value = (int(src[pos]) + int(src[pos + 1]) + int(src[pos + 2])) / 3
+            dest[i] = int(value)
+
+    length = int(flatten.shape[0] / 3)
+    chunk = int(length / 4)
+
+    new_img = [0 for i in range(length)]
+    idx = 0
+    thread_pool = []
+
+    # build thread
+    while (idx < length):
+        arg = (flatten, new_img, idx, chunk, length,)
+        p = threading.Thread(target=process, args=arg)
+        debug(0, f"thread info: {idx}, {chunk}, {length}")
+        thread_pool.append(p)
+        idx += chunk
+
+    # run and wait thread
+    for p in thread_pool:
+        p.start()
+        debug(0, f"start thread: {p}")
+    for p in thread_pool:
+        p.join()
+        debug(0, f"end thread: {p}")
+
     new_img = np.array(new_img)
     debug(0, f"new image shape: {new_img.shape}")
     debug(0, f"new image sample value: {new_img[1:10]}")
@@ -101,20 +127,20 @@ if __name__ == "__main__":
     image = crop_img(o_image, o_image.shape[1] / 2)
 
     # initialize GPU
-    debug_activate = False
-    gpu_rgb_2_gray(image)
-    debug_activate = True
-
-    print("GPU Running...")
-    timer.start()
-    img = gpu_rgb_2_gray(image)
-    timer.end()
-    timer.print_elapsed()
-    save_img(f"{get_name(image_file)}_gpu_gray.jpg", img)
-
-#    print("\nCPU Running...")
+#    debug_activate = False
+#    gpu_rgb_2_gray(image)
+#    debug_activate = True
+#
+#    print("GPU Running...")
 #    timer.start()
-#    img = cpu_rgb_2_gray(image)
+#    img = gpu_rgb_2_gray(image)
 #    timer.end()
 #    timer.print_elapsed()
-#    save_img(f"{get_name(image_file)}_cpu_gray.jpg", img)
+#    save_img(f"{get_name(image_file)}_gpu_gray.jpg", img)
+#
+    print("\nCPU Running...")
+    timer.start()
+    img = cpu_rgb_2_gray(image)
+    timer.end()
+    timer.print_elapsed()
+    save_img(f"{get_name(image_file)}_cpu_gray.jpg", img)
