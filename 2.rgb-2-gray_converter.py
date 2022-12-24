@@ -72,7 +72,7 @@ def cpu_rgb_2_gray(img):
     return gray_img
 
 
-def gpu_rgb_2_gray(img):
+def gpu_rgb_2_gray(img, thread_per_block=64):
     """
     1. Build kernel
     2. Feed data to device
@@ -100,7 +100,6 @@ def gpu_rgb_2_gray(img):
         (int(flatten.shape[0] / 3),), dtype=np.uint8)
 
     pixel = int(flatten.shape[0] / 3)
-    thread_per_block = 64
     block_per_grid = (pixel + thread_per_block - 1) // thread_per_block
 
     debug(2, "start execute thread in gpu...")
@@ -133,11 +132,19 @@ if __name__ == "__main__":
     gpu_rgb_2_gray(image)
     debug_activate = True
 
+    gpu_thread_pool = {}
+    img = None
+
     print("GPU Running...")
-    timer.start()
-    img = gpu_rgb_2_gray(image)
-    timer.end()
-    timer.print_elapsed()
+    for i in range(1, 10):
+        thread_per_block = 16 * i
+        timer.start()
+        img = gpu_rgb_2_gray(image, thread_per_block)
+        timer.end()
+        gpu_thread_pool[thread_per_block] = f"{timer.get_elapsed()} ms"
+    print("Elapsed Pool:")
+    for i in gpu_thread_pool:
+        print(f"[{i}] time: {gpu_thread_pool[i]}")
     save_img(f"{get_name(image_file)}_gpu_gray.jpg", img)
 
     print("\nCPU Running...")
