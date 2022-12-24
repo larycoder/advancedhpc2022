@@ -14,6 +14,9 @@ class ElapsedTime():
     def end(self):
         self.t_end = time.time()
 
+    def get_elapsed(self):
+        return (self.t_end - self.t_start) * 1000
+
     def print_elapsed(self):
         counter = (self.t_end - self.t_start) * 1000
         print(f"Elapsed time: {counter} ms")
