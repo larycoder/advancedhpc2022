@@ -12,6 +12,8 @@ def debug(id, obj):
 
     if not debug_activate:
         return
+    if id == 0:
+        return
     if id == 2:
         return
 
@@ -38,7 +40,7 @@ def cpu_rgb_2_gray(img):
             dest[i] = int(value)
 
     length = int(flatten.shape[0] / 3)
-    chunk = int(length / 4)
+    chunk = int(length / 6)
 
     new_img = [0 for i in range(length)]
     idx = 0
@@ -127,17 +129,17 @@ if __name__ == "__main__":
     image = crop_img(o_image, o_image.shape[1] / 2)
 
     # initialize GPU
-#    debug_activate = False
-#    gpu_rgb_2_gray(image)
-#    debug_activate = True
-#
-#    print("GPU Running...")
-#    timer.start()
-#    img = gpu_rgb_2_gray(image)
-#    timer.end()
-#    timer.print_elapsed()
-#    save_img(f"{get_name(image_file)}_gpu_gray.jpg", img)
-#
+    debug_activate = False
+    gpu_rgb_2_gray(image)
+    debug_activate = True
+
+    print("GPU Running...")
+    timer.start()
+    img = gpu_rgb_2_gray(image)
+    timer.end()
+    timer.print_elapsed()
+    save_img(f"{get_name(image_file)}_gpu_gray.jpg", img)
+
     print("\nCPU Running...")
     timer.start()
     img = cpu_rgb_2_gray(image)
