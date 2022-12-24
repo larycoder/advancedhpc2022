@@ -19,17 +19,49 @@ Do it simple with a loop and recompute each pixel. Following
 below instruction:
 
 \begin{enumerate}
-\item Load image
-\item Flatten image
-\item Loop and build average value for each pixel
-\item Re-shape image to original shape
-\item Shape image to new file
+    \item Load image
+    \item Flatten image
+    \item Build thread function to compute average value for each pixel
+    \item Loop and create thread to compute whole image
+    \item Run and wait for all threads join
+    \item Re-shape image to original shape
+    \item Shape image to new file
 \end{enumerate}
 
 Evaluation:
 
 \beign{verbatim}
-# TODO: coming soon
+CPU Running...
+Elapsed time: 10287.384271621704 ms
+[DEBUG] saved gray image path: result/eiffel_cpu_gray.jpg
+\end{verbatim}
+
+\section{GPU Implementation}
+
+GPU has too much of cores than CPU, we desire to leverage them to
+improve time performance of converter process. Because GPU is treated as SIMD
+architecture, it allows to execute single function (kernel) for all core at same
+time with slightly different of thread index. Hence, we need to design a good kernel
+to reach out our target. Depend on GPU architecture, we need to build a specific
+algorithm for doing that. On this labwork, we suppose to use most simplest one.
+We map each thread index corresponding to one pixel. Then each thread try to
+do same job as CPU process on its own pixel. Detail algorithm is described below:
+
+\begin{enumerate}
+    \item Load input image (Color image) and output array (Gray image)
+    \item Get thread index
+    \item Checking whether thread index is valid mapped to a pixel
+    \item If thread does not valid, it is closed
+    \item If thread mapped to pixel, it compute average value of pixel saved to output image
+    \item When all the thread done, return back output image to CPU
+\end{enumerate}
+
+Evaluation
+
+\begin{verbatim}
+GPU Running...
+Elapsed time: 68.34006309509277 ms
+[DEBUG] saved gray image path: result/eiffel_gpu_gray.jpg
 \end{verbatim}
 
 \end{document}
